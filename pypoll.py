@@ -10,6 +10,7 @@ import os
 
 # import full voting data
 votes_file = os.path.join("Resources", "election_results.csv")
+output_path = os.path.join("analysis", "election_analysis.txt")
 
 # init total vote counter
 totalVotes = int(0)
@@ -19,13 +20,17 @@ candidate_vote = dict()
 with open(votes_file) as election_data:
     file_reader = csv.reader(election_data)
 
+    #Exclude header row
+    headers = next(file_reader)
+
     for row in file_reader:
+
         # increment vote counter
         totalVotes += 1
 
         candidate_name = row[2]
 
-        if not(candidate_name in candidate_options):
+        if not(candidate_name in candidate_options): 
 
             # Add new candidate if not currently in list and start vote tracker
             candidate_options.append(candidate_name)
@@ -34,30 +39,45 @@ with open(votes_file) as election_data:
         # Add vote to candidate tally
         candidate_vote[candidate_name] += 1
 
-# Calculate percentages for each candidate and determine a winner
-winning_candidate = ""
-winning_count = 0
-winning_percentage = 0
+# Write total results to output file.
+with open(output_path, "w") as txt_file:
+    election_results = (
+        f"Election Results\n"
+        f"--------------------------\n"
+        f"Total votes: {totalVotes:,}\n"
+        f"--------------------------\n"
+    )
+    print(election_results, end="")
 
-for candidate in candidate_vote:
-    candidate_vote_total = candidate_vote.get(candidate)
+    txt_file.write(election_results)
 
-    vote_percent = (float(candidate_vote_total) / float(totalVotes)) * 100
-    print(f"{candidate}: {vote_percent:.1f}% ({candidate_vote_total:,})\n")
-    
-    # Update winner if current candidate has most votes
-    if candidate_vote_total > winning_count:
-        winning_candidate = candidate
-        winning_count = candidate_vote_total
-        winning_percentage = vote_percent
+    # Calculate percentages for each candidate and determine a winner
+    winning_candidate = ""
+    winning_count = 0
+    winning_percentage = 0
 
-print("--------------------------------------")
-print(f"Winner: {winning_candidate}\nWinning Vote Count: {winning_count:,}\nWinning Percentage: {winning_percentage:.1f}")
+    for candidate in candidate_vote:
+        candidate_vote_total = candidate_vote.get(candidate)
 
-# Generate output for analysis file
-output_path = os.path.join("analysis", "election_analysis.txt")
+        vote_percent = (float(candidate_vote_total) / float(totalVotes)) * 100
+        
+        candidate_results = f"{candidate}: {vote_percent:.1f}% ({candidate_vote_total:,})\n"
 
-with open(output_path, "w") as outfile:
-    outfile.write("Counties in the Election\n")
-    outfile.write("--------------------------\n")
-    outfile.write("Arapahoe\nDenver\nJefferson\n")
+        txt_file.write(candidate_results)
+        print(candidate_results)
+
+        # Update winner if current candidate has most votes
+        if candidate_vote_total > winning_count:
+            winning_candidate = candidate
+            winning_count = candidate_vote_total
+            winning_percentage = vote_percent
+
+    txt_file.write(f"--------------------------\n")
+    winning_candidate_summary = f"Winner: {winning_candidate}\nWinning Vote Count: {winning_count:,}\nWinning Percentage: {winning_percentage:.1f}%"
+    print(winning_candidate_summary)
+    txt_file.write(winning_candidate_summary)
+
+# print("--------------------------------------")
+# print(winning_candidate_summary)
+
+
