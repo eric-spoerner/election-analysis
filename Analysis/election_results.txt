@@ -24,23 +24,23 @@ Winning Percentage: 73.8%
 County-level Breakdown
 -----------------------------------------
 County: Jefferson
-	Charles Casper Stockham: 19,723 (50.76%)
-	Diana DeGette: 17,963 (46.23%)
-	Raymon Anthony Doane: 1,169 (3.01%)
+	Charles Casper Stockham: 50.76% (19,723)
+	Diana DeGette: 46.23% (17,963)
+	Raymon Anthony Doane: 3.01% (1,169)
 Total votes in county: 38,855
 Candidate with most votes: Charles Casper Stockham
 -----------------------------------------
 County: Denver
-	Charles Casper Stockham: 57,188 (18.69%)
-	Diana DeGette: 239,282 (78.18%)
-	Raymon Anthony Doane: 9,585 (3.13%)
+	Charles Casper Stockham: 18.69% (57,188)
+	Diana DeGette: 78.18% (239,282)
+	Raymon Anthony Doane: 3.13% (9,585)
 Total votes in county: 306,055
 Candidate with most votes: Diana DeGette
 -----------------------------------------
 County: Arapahoe
-	Charles Casper Stockham: 8,302 (33.47%)
-	Diana DeGette: 15,647 (63.09%)
-	Raymon Anthony Doane: 852 (3.44%)
+	Charles Casper Stockham: 33.47% (8,302)
+	Diana DeGette: 63.09% (15,647)
+	Raymon Anthony Doane: 3.44% (852)
 Total votes in county: 24,801
 Candidate with most votes: Diana DeGette
 -----------------------------------------
