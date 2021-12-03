@@ -1,18 +1,53 @@
 Election Results
---------------------------
+-----------------------------------------
 Total votes: 369,711
---------------------------
+-----------------------------------------
 County Votes:
 Jefferson: 10.5% (38,855)
 Denver: 82.8% (306,055)
 Arapahoe: 6.7% (24,801)
---------------------------
+-----------------------------------------
 Largest County Turnout: Denver
---------------------------
+-----------------------------------------
 Charles Casper Stockham: 23.0% (85,213)
 Diana DeGette: 73.8% (272,892)
 Raymon Anthony Doane: 3.1% (11,606)
---------------------------
+-----------------------------------------
 Winner: Diana DeGette
 Winning Vote Count: 272,892
 Winning Percentage: 73.8%
+
+-----------------------------------------
+VOTE BREAKDOWN BY COUNTY
+-----------------------------------------
+County: Jefferson
+	Charles Casper Stockham: 19,723 (50.76%)
+	Diana DeGette: 17,963 (46.23%)
+	Raymon Anthony Doane: 1,169 (3.01%)
+Total votes in county: 38,855
+Candidate with most votes: Charles Casper Stockham
+-----------------------------------------
+County: Denver
+	Charles Casper Stockham: 57,188 (18.69%)
+	Diana DeGette: 239,282 (78.18%)
+	Raymon Anthony Doane: 9,585 (3.13%)
+Total votes in county: 306,055
+Candidate with most votes: Diana DeGette
+-----------------------------------------
+County: Arapahoe
+	Charles Casper Stockham: 8,302 (33.47%)
+	Diana DeGette: 15,647 (63.09%)
+	Raymon Anthony Doane: 852 (3.44%)
+Total votes in county: 24,801
+Candidate with most votes: Diana DeGette
+-----------------------------------------
+-----------------------------------------
+DATA VERIFICATION REPORT
+-----------------------------------------
+DATA CROSS-CHECK FOR COUNTY TOTAL: Jefferson OK
+DATA CROSS-CHECK FOR COUNTY TOTAL: Denver OK
+DATA CROSS-CHECK FOR COUNTY TOTAL: Arapahoe OK
+DATA CROSS-CHECK FOR CANDIDATE TOTAL: Charles Casper Stockham OK
+DATA CROSS-CHECK FOR CANDIDATE TOTAL: Diana DeGette OK
+DATA CROSS-CHECK FOR CANDIDATE TOTAL: Raymon Anthony Doane OK
+DATA CROSS-CHECK FOR AGGREGATE TOTAL: 369711 OK

@@ -11,7 +11,12 @@
     # County with highest turnout
 
 # Extra credit:
-    # Candidate breakdown per county
+    # Candidate breakdown per county in new data structure (two-tier dictionary)
+    # Audit trail to compare county candidate breakdown vs original data structures to ensure cleanliness:
+    # Add supplemental total checks / debugs between segmentation and one-dimensional lists
+        # Sum county reults in 2-dimensional dict and compare to value in list
+        # Sum candidates in 2-dimensional dict and compare to value in list
+        # Sum all votes in 2-dimensional dict, and one dimensional dicts and compare all 3
 
 import csv
 import os
@@ -22,17 +27,27 @@ output_path = os.path.join("analysis", "election_analysis.txt")
 
 # init total vote counter
 totalVotes = int(0)
+
+# containers for identification of each candidate
 candidate_options = list()
-candidate_vote = dict()
 county_options = list()
+
+# containers for one-dimensional retention of votes per county/candidate
+candidate_vote = dict()
 county_vote = dict()
 
-# BEGIN TEST DEBUG CODE TO ADD FULL CANDIDATE LIST
-#temporary code for new algo, create new list for agg vote
+# 2-tier dictionary for storing segmented county+candidate vote tallies
+county_candidate_segmentation = {}
 
-all_counties = {}
+# Initializing linebreak as repeatable variable
+divider_line = f"-----------------------------------------\n"
 
-# Commenting all of the below out for the moment
+# Print eventual readout for data verification checks
+data_verification_report = str(divider_line +
+                           "DATA VERIFICATION REPORT\n" +
+                           divider_line)
+
+# Begin read loop
 with open(votes_file) as election_data:
     file_reader = csv.reader(election_data)
 
@@ -47,38 +62,33 @@ with open(votes_file) as election_data:
         county_name = row[1]
         candidate_name = row[2]
 
-        # Add missing county to county list
-        if not(county_name in all_counties.keys()):
-            all_counties[county_name] = {} # init dict entry with new county
-            county_options.append(county_name) # add county name to reference list
-            county_vote[county_name] = 0 # add to dict for tracking aggregate county stats
+        # Add missing county to data structures
+        if not(county_name in county_candidate_segmentation.keys()):
+            county_candidate_segmentation[county_name] = {}
+            county_options.append(county_name)
 
-            for name in candidate_options: # add all known candidates from list to new county
-                all_counties[county_name][name] = 0
+            county_vote[county_name] = 0
+
+            # add all known candidates from list to new county
+            for name in candidate_options: 
+                county_candidate_segmentation[county_name][name] = 0
                 
+        # Add missing candidate to data structures
         if not(candidate_name in candidate_options):
             candidate_options.append(candidate_name) # add candidate to reference list
             candidate_vote[candidate_name] = 0
 
             #init name in dict --- iterate over all existing counties and add candidate at 0
-            for county in all_counties.keys():
-                all_counties[county].update({candidate_name:0})
+            for county in county_candidate_segmentation.keys():
+                county_candidate_segmentation[county].update({candidate_name:0})
 
         # Add vote count to county/candidate segmentation analysis
-        new_vote_count = all_counties[county_name][candidate_name] + 1
-        all_counties[county_name].update({candidate_name : new_vote_count})
+        new_vote_count = county_candidate_segmentation[county_name][candidate_name] + 1
+        county_candidate_segmentation[county_name].update({candidate_name : new_vote_count})
 
         # Add vote count to one dimensional data structures
         candidate_vote[candidate_name] += 1
         county_vote[county_name] += 1
-
-
-# Calculate total votes per county and add to dictionary as new kvp
-# for county in all_counties:
-#     county_total = 0
-
-
-divider_line = f"--------------------------\n"
 
 # Write total results to output file.
 with open(output_path, "w") as txt_file:
@@ -158,7 +168,7 @@ with open(output_path, "w") as txt_file:
     )
 
     # Tally and publish individual vote counts
-    for county in all_counties:
+    for county in county_candidate_segmentation:
 
         county_result_output += f"County: {county}\n"
         total_county_votes = 0
@@ -166,19 +176,81 @@ with open(output_path, "w") as txt_file:
         highest_county_candidate = ""
         # candidate_county_percentage = 0.0
 
-        for candidate in all_counties[county]:
-            num_votes = all_counties[county][candidate]
+        for candidate in county_candidate_segmentation[county]:
+            num_votes = county_candidate_segmentation[county][candidate]
 
             if num_votes > total_county_votes:
                 highest_candidate_county_vote_count = num_votes
                 highest_county_candidate = candidate
 
             total_county_votes += num_votes
-            county_result_output += f"\t{candidate}: {num_votes:,}\n"
+            candidate_pct = num_votes / county_vote[county]
 
+            county_result_output += f"\t{candidate}: {num_votes:,} ({candidate_pct:0.2%})\n"
+
+        # Verification 1: identify that total_county_votes derived from segmentation matches value from original dict
+        if total_county_votes == county_vote[county]:
+            county_verification_str = f"DATA CROSS-CHECK FOR COUNTY TOTAL: {county} OK\n"
+        else:
+            county_verification_str = f"ERROR: AGGREGATE VOTE DISCREPANCY FOR {county}\n"
+
+        data_verification_report += county_verification_str           
+    
         county_result_output += f"Total votes in county: {total_county_votes:,}\n"
-        county_result_output += f"Candidate with most votes received in {county}: {highest_county_candidate}\n"
+        county_result_output += f"Candidate with most votes: {highest_county_candidate}\n"
         county_result_output += divider_line
+
+
+    # verification 2: Sum candidates in 2-dimensional dict and compare to value in list
+    total_candidate_votes = {}
+    for name in candidate_options: 
+        total_candidate_votes[name]  = 0
+
+    for county in county_candidate_segmentation:
+        for candidate in county_candidate_segmentation[county]:
+            total_candidate_votes[candidate] += county_candidate_segmentation[county][candidate]
+
+    for candidate in candidate_options:
+        print(candidate)
+        if total_candidate_votes[candidate] == candidate_vote[candidate]:
+            county_verification_str = f"DATA CROSS-CHECK FOR CANDIDATE TOTAL: {candidate} OK\n"
+        else:
+            county_verification_str = f"ERROR: AGGREGATE VOTE DISCREPANCY FOR {candidate}\n"
+        data_verification_report += county_verification_str
+        print(county_verification_str)
+    # End verification 2
+
+    
+    #Verification 3: Confirm all aggregate totals are in alignment
+    total_verif_1 = 0
+    for county in county_candidate_segmentation:
+        for candidate in county_candidate_segmentation[county]:
+            total_verif_1 += county_candidate_segmentation[county][candidate]
+
+    total_verif_2 = 0
+    for county in county_vote:
+        total_verif_2 += county_vote[county]
+
+    total_verif_3 = 0
+    for candidate in candidate_vote:
+        total_verif_3 += candidate_vote[candidate]
+
+    county_verification_str = ""
+
+    if (total_verif_1 == total_verif_2 == total_verif_3):
+        county_verification_str = f"DATA CROSS-CHECK FOR AGGREGATE TOTAL: {total_verif_1} OK\n"
+    else:
+        county_verification_str = f"ERROR IN AGGREGATE TOTAL, MISMATCH: {total_verif_1}, {total_verif_2}, {total_verif_3}\n"
+
+    data_verification_report += county_verification_str
 
     print(county_result_output)
     txt_file.write(county_result_output)
+
+    print(data_verification_report)
+    txt_file.write(data_verification_report)
+
+# Add supplemental total checks / debugs between segmentation and one-dimensional lists
+# Sum county reults in 2-dimensional dict and compare to value in list
+# Sum candidates in 2-dimensional dict and compare to value in list
+# Sum all votes in 2-dimensional dict, and one dimensional dicts and compare all 3
