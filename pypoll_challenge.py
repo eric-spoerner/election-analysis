@@ -1,35 +1,14 @@
-# Required data for retrival:
-    # Total number of votes cast
-    # Complete list of candidates who received votes
-    # Percentage of votes each candidate won
-    # Total number of votes each candidate won
-    # Winner of election based on popular vote
-
-# Additional challenge:
-    # Voter turnout for each county
-    # Percentage votes from each county out of total count
-    # County with highest turnout
-
-# Extra credit:
-    # Candidate breakdown per county in new data structure (two-tier dictionary)
-    # Audit trail to compare county candidate breakdown vs original data structures to ensure cleanliness:
-    # Add supplemental total checks / debugs between segmentation and one-dimensional lists
-        # Sum county reults in 2-dimensional dict and compare to value in list
-        # Sum candidates in 2-dimensional dict and compare to value in list
-        # Sum all votes in 2-dimensional dict, and one dimensional dicts and compare all 3
-
-# Refactor:
-    # Eliminate unnecessary calls to print and txt.write of multiple strings in lieu of a few major sections
-    # Identify redundant variables
-    # Rename variables for clarity
-    # Reformat report for aesthetics
+# Refactors conducted:
+    # Reduced number of calls to print() and txt_file.write()
+    # Renamed variables for clarity
+    # Reformatted report for aesthetics
 
 import csv
 import os
 
 # import full voting data
 votes_file = os.path.join("Resources", "election_results.csv")
-output_path = os.path.join("analysis", "election_analysis.txt")
+output_path = os.path.join("analysis", "election_results.txt")
 
 # init total vote counter
 total_votes = int(0)
@@ -177,7 +156,7 @@ with open(output_path, "w") as txt_file:
             county_vote_total += num_votes
             candidate_pct = num_votes / county_vote[county]
 
-            county_breakdown_report += f"\t{candidate}: {num_votes:,} ({candidate_pct:0.2%})\n"
+            county_breakdown_report += f"\t{candidate}: {candidate_pct:0.2%} ({num_votes:,})\n"
 
         # Data Verification 1: identify that county_vote_total derived from segmentation matches value from original dict
         if county_vote_total == county_vote[county]:
@@ -207,7 +186,6 @@ with open(output_path, "w") as txt_file:
         else:
             county_verification_str = f"ERROR: AGGREGATE VOTE DISCREPANCY FOR {candidate}\n"
         data_verification_report += county_verification_str
-    # End verification 2
 
     
     # Data Verification 3: Confirm all aggregate totals are in alignment
@@ -234,13 +212,11 @@ with open(output_path, "w") as txt_file:
     data_verification_report += agg_verification_str
 
     # Print and write completed report segments
-    txt_file.write(election_report)
     print(election_report)
+    txt_file.write(election_report)
 
     print(county_breakdown_report)
     txt_file.write(county_breakdown_report)
 
     print(data_verification_report)
     txt_file.write(data_verification_report)
-
-print(candidate_votes_by_county)
