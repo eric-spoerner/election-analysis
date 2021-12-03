@@ -3,13 +3,12 @@
 ## Project Overview
 This repository contains a python-based tool for consuming raw CSV data regarding anonymized vote tallies, and running tabulations for that election.  
 
-A Colorado Board of Elections employee has requested an election audit of a recent congressional election.  The initial request was as follows:
+This tool has been used in service of a request from the Colorado Board of Elections employee, and will be used to conduct an election audit of a recent congressional election in Colorado's 1st District.  The initial request was as follows:
 
 1. Tabulate total number of votes cast
 2. Identify complete list of candidates who received votes
-2. Identify all counties
+2. Identify all counties where voting occurred
 3. Calculate percentage of votes each candidate received
-4. Calculate percentage of vote for each candidate
 5. Calculate percentage of vote per county
 6. Identify county with largest share of total vote
 7. Identify winner of election based on popular vote
@@ -17,24 +16,24 @@ A Colorado Board of Elections employee has requested an election audit of a rece
 Additional work was conducted to do the following:
 
 1. Segment each vote by county and candidate
-2. Using total county votes identified above, re-aggregate total county votes
-3. Identify percentage of vote per county
+3. Identify percentage of candidate vote per county
 4. Print records
+
+Finally, data verification checks 
 
 ## Resources
 * Data source: election_results.csv
 * Software: Python 3.10, Visual Studio Code 1.62.3
+* Other resources: Stack Overflow
 
 ## The Data
-
-Election is for an office in the Denver metropolitan area, and contains voter data from the consolidated city-county of Denver as well as two adjacent counties.
 
 Data is comprised of a CSV containing a total of 369,711 records, with the following data points:
 * ID
 * County
 * Candidate receiving vote
 
-No known anomalies exist in the data.
+No known anomalies exist in the data, and no personally identifiable information (PII) is contained in the data.
 
 ## The analysis tool
 
@@ -104,11 +103,41 @@ Candidate with most votes received in Arapahoe: Diana DeGette
 
 ## Analysis of results
 
+Diana DeGette was the clear winner in the election, with an overwhelming **73.8%** of the total vote.  This was largely driven by her success in Denver; she received 78.18% of the vote in a jurisdiction that represented 82.8% in the total vote.
+
+Charles Casper Stockham had a small edge over DeGette in Jefferson County.  Further analysis of the candidates and their respective counties is needed, but it is a safe assumption that this is due to the relative partisaan affiliation of Jefferson compared to Denver and Arapahoe.
+
+Raymon Anthony Doane received a small margin (~3% in every county) and was not competitive in this race, presumably running on a third party ticket.
+
 ## Challenges and considerations
 
-Data structures are hard without pandas.
-Identifying the appropriate data structures to aggregate multi-dimensionally.  Some combination of dict, list.  Wound up going with two-dimensional ist.
+Data structures are difficult to manipulate with standard Python libraries.  Better data manipulation techniques would have been available through the usage of tools like Pandas.
+
+In this project, identifying the appropriate data structures to aggregate multi-dimensionally for a county-by-county breakdown.  Multiple variations of lists/dictionary combinations were used before settling on the following two-tier dictionary structure:
+
+```
+{
+'Jefferson':    {'Charles Casper Stockham': 19723,
+                'Diana DeGette': 17963, 
+                'Raymon Anthony Doane': 1169}, 
+'Denver':       {'Charles Casper Stockham': 57188,
+                'Diana DeGette': 239282,
+                'Raymon Anthony Doane': 9585},
+'Arapahoe':     {'Charles Casper Stockham': 8302,
+                'Diana DeGette': 15647, 
+                'Raymon Anthony Doane': 852}
+}
+```
+
+Original approach was the use of a list-dict-list-dict framework in order to leverage keys as column headers rather than actual data values, but this proved unwieldy and difficult to use for lookups and manipulation.
 
 ## Further analysis
 
-Compare against external data sources? - county + partisan affiliation?  county + projected vote results?  
+Much of the capability of analysis for this data set in isolation has been exhausted, given the limited data points provided.
+
+Additional fraud analysis could be conducted by identify anomalous patterns such as sequential insertions.  Should the possibility exist for tampering with the source CSV file, unsophisticated tampering techniques could potentially be identified in pattern analysis (for example, several contiguous records with votes for the same individual).
+
+Further county analysis:
+* Compare against external data sources of the electorate to infer partisan affiliation of candidates
+* GIS visualization - build a heat-map of this electoral district and display prevalence of vote by county 
+* Should pre-polling data be available for extraction and analysis, it could be a useful exercise to analyze the actual results against expectations based on polling.

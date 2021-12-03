@@ -19,10 +19,10 @@
         # Sum all votes in 2-dimensional dict, and one dimensional dicts and compare all 3
 
 # Refactor:
-# Eliminate unnecessary calls to print and txt.write of multiple strings in lieu of a few major sections
-# Identify redundant variables
-# Rename variables for clarity
-# Reformat report for aesthetics
+    # Eliminate unnecessary calls to print and txt.write of multiple strings in lieu of a few major sections
+    # Identify redundant variables
+    # Rename variables for clarity
+    # Reformat report for aesthetics
 
 import csv
 import os
@@ -243,7 +243,4 @@ with open(output_path, "w") as txt_file:
     print(data_verification_report)
     txt_file.write(data_verification_report)
 
-# Add supplemental total checks / debugs between segmentation and one-dimensional lists
-# Sum county reults in 2-dimensional dict and compare to value in list
-# Sum candidates in 2-dimensional dict and compare to value in list
-# Sum all votes in 2-dimensional dict, and one dimensional dicts and compare all 3
+print(candidate_votes_by_county)
