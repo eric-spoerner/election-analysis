@@ -1,24 +1,27 @@
-Election Results
+-----------------------------------------
+ELECTION RESULTS
 -----------------------------------------
 Total votes: 369,711
 -----------------------------------------
-County Votes:
+Total Votes Per County:
 Jefferson: 10.5% (38,855)
 Denver: 82.8% (306,055)
 Arapahoe: 6.7% (24,801)
 -----------------------------------------
 Largest County Turnout: Denver
 -----------------------------------------
+Candidate Votes:
 Charles Casper Stockham: 23.0% (85,213)
 Diana DeGette: 73.8% (272,892)
 Raymon Anthony Doane: 3.1% (11,606)
 -----------------------------------------
-Winner: Diana DeGette
+WINNER: Diana DeGette
 Winning Vote Count: 272,892
 Winning Percentage: 73.8%
+-----------------------------------------
 
 -----------------------------------------
-VOTE BREAKDOWN BY COUNTY
+County-level Breakdown
 -----------------------------------------
 County: Jefferson
 	Charles Casper Stockham: 19,723 (50.76%)
@@ -41,8 +44,9 @@ County: Arapahoe
 Total votes in county: 24,801
 Candidate with most votes: Diana DeGette
 -----------------------------------------
+
 -----------------------------------------
-DATA VERIFICATION REPORT
+Data Verification Report
 -----------------------------------------
 DATA CROSS-CHECK FOR COUNTY TOTAL: Jefferson OK
 DATA CROSS-CHECK FOR COUNTY TOTAL: Denver OK

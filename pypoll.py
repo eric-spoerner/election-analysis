@@ -18,6 +18,12 @@
         # Sum candidates in 2-dimensional dict and compare to value in list
         # Sum all votes in 2-dimensional dict, and one dimensional dicts and compare all 3
 
+# Refactor:
+# Eliminate unnecessary calls to print and txt.write of multiple strings in lieu of a few major sections
+# Identify redundant variables
+# Rename variables for clarity
+# Reformat report for aesthetics
+
 import csv
 import os
 
@@ -26,7 +32,7 @@ votes_file = os.path.join("Resources", "election_results.csv")
 output_path = os.path.join("analysis", "election_analysis.txt")
 
 # init total vote counter
-totalVotes = int(0)
+total_votes = int(0)
 
 # containers for identification of each candidate
 candidate_options = list()
@@ -37,15 +43,7 @@ candidate_vote = dict()
 county_vote = dict()
 
 # 2-tier dictionary for storing segmented county+candidate vote tallies
-county_candidate_segmentation = {}
-
-# Initializing linebreak as repeatable variable
-divider_line = f"-----------------------------------------\n"
-
-# Print eventual readout for data verification checks
-data_verification_report = str(divider_line +
-                           "DATA VERIFICATION REPORT\n" +
-                           divider_line)
+candidate_votes_by_county = {}
 
 # Begin read loop
 with open(votes_file) as election_data:
@@ -57,21 +55,21 @@ with open(votes_file) as election_data:
     for row in file_reader:
 
         # increment vote counter
-        totalVotes += 1
+        total_votes += 1
 
         county_name = row[1]
         candidate_name = row[2]
 
         # Add missing county to data structures
-        if not(county_name in county_candidate_segmentation.keys()):
-            county_candidate_segmentation[county_name] = {}
+        if not(county_name in candidate_votes_by_county.keys()):
+            candidate_votes_by_county[county_name] = {}
             county_options.append(county_name)
 
             county_vote[county_name] = 0
 
             # add all known candidates from list to new county
             for name in candidate_options: 
-                county_candidate_segmentation[county_name][name] = 0
+                candidate_votes_by_county[county_name][name] = 0
                 
         # Add missing candidate to data structures
         if not(candidate_name in candidate_options):
@@ -79,74 +77,76 @@ with open(votes_file) as election_data:
             candidate_vote[candidate_name] = 0
 
             #init name in dict --- iterate over all existing counties and add candidate at 0
-            for county in county_candidate_segmentation.keys():
-                county_candidate_segmentation[county].update({candidate_name:0})
+            for county in candidate_votes_by_county.keys():
+                candidate_votes_by_county[county].update({candidate_name:0})
 
         # Add vote count to county/candidate segmentation analysis
-        new_vote_count = county_candidate_segmentation[county_name][candidate_name] + 1
-        county_candidate_segmentation[county_name].update({candidate_name : new_vote_count})
+        new_vote_count = candidate_votes_by_county[county_name][candidate_name] + 1
+        candidate_votes_by_county[county_name].update({candidate_name : new_vote_count})
 
         # Add vote count to one dimensional data structures
         candidate_vote[candidate_name] += 1
         county_vote[county_name] += 1
 
-# Write total results to output file.
+# Init strings for report
+# Initializing linebreak as repeatable variable
+divider_line = f"-----------------------------------------\n"
+
+election_report = str(divider_line +
+                           "ELECTION RESULTS\n" +
+                           divider_line)
+
+county_breakdown_report = str("\n" +
+                            divider_line +
+                           "County-level Breakdown\n" +
+                           divider_line)
+
+data_verification_report = str("\n" +
+                            divider_line +
+                           "Data Verification Report\n" +
+                           divider_line)
+
+
+# WRITE RESULTS TO OUTPUT FILE
 with open(output_path, "w") as txt_file:
-    election_results = (
-        f"Election Results\n" +
-        divider_line +
-        f"Total votes: {totalVotes:,}\n" +
-        divider_line
-    )
-    print(election_results, end="")
+    election_report += f"Total votes: {total_votes:,}\n"
+    election_report += divider_line
 
-    txt_file.write(election_results)
+    # Calculate percentages for each county and determine a winner
+    county_with_most_votes = ""
+    most_county_votes = 0
 
-    # Calculate percentages for each candidate and determine a winner
-    winning_county = ""
-    winning_count = 0
-
-    txt_file.write("County Votes:\n")
-    print("County Votes:\n")
+    election_report += "Total Votes Per County:\n"
 
     for county in county_vote:
         county_vote_total = county_vote.get(county)
 
-        vote_percent = (float(county_vote_total) / float(totalVotes)) * 100
+        vote_percent = (float(county_vote_total) / float(total_votes)) * 100
         
-        county_results = f"{county}: {vote_percent:.1f}% ({county_vote_total:,})\n"
-
-        txt_file.write(county_results)
-        print(county_results)
+        election_report += f"{county}: {vote_percent:.1f}% ({county_vote_total:,})\n"
 
         # Update winner if current county has most votes
-        if county_vote_total > winning_count:
-            winning_county = county
-            winning_count = county_vote_total
+        if county_vote_total > most_county_votes:
+            county_with_most_votes = county
+            most_county_votes = county_vote_total
 
-    txt_file.write(divider_line)
-    print(divider_line)
-    
-    winning_county_summary = f"Largest County Turnout: {winning_county}\n"
-    print(winning_county_summary)
-    txt_file.write(winning_county_summary)
-    txt_file.write(divider_line)
-    print(divider_line)
+    election_report += divider_line    
+    election_report += f"Largest County Turnout: {county_with_most_votes}\n"
+    election_report += divider_line    
 
-    # Calculate percentages for each county and determine a winner
+    # Calculate percentages for each candidate and determine a winner
     winning_candidate = ""
     winning_count = 0
     winning_percentage = 0
 
+    election_report += f"Candidate Votes:\n"    
+
     for candidate in candidate_vote:
         candidate_vote_total = candidate_vote.get(candidate)
 
-        vote_percent = (float(candidate_vote_total) / float(totalVotes)) * 100
+        vote_percent = (float(candidate_vote_total) / float(total_votes)) * 100
         
-        candidate_results = f"{candidate}: {vote_percent:.1f}% ({candidate_vote_total:,})\n"
-
-        txt_file.write(candidate_results)
-        print(candidate_results)
+        election_report += f"{candidate}: {vote_percent:.1f}% ({candidate_vote_total:,})\n"
 
         # Update winner if current candidate has most votes
         if candidate_vote_total > winning_count:
@@ -154,78 +154,67 @@ with open(output_path, "w") as txt_file:
             winning_count = candidate_vote_total
             winning_percentage = vote_percent
 
-    print(divider_line)
-    txt_file.write(divider_line)
-    winning_candidate_summary = f"Winner: {winning_candidate}\nWinning Vote Count: {winning_count:,}\nWinning Percentage: {winning_percentage:.1f}%"
-    print(winning_candidate_summary)
-    txt_file.write(winning_candidate_summary)
+    election_report += divider_line
+    election_report += f"WINNER: {winning_candidate}\nWinning Vote Count: {winning_count:,}\nWinning Percentage: {winning_percentage:.1f}%\n"
+    election_report += divider_line
 
+    # Tally and publish county-level vote counts
+    for county in candidate_votes_by_county:
 
-    county_result_output = ("\n\n" + 
-                            divider_line +
-                            f"VOTE BREAKDOWN BY COUNTY\n" +
-                            divider_line
-    )
-
-    # Tally and publish individual vote counts
-    for county in county_candidate_segmentation:
-
-        county_result_output += f"County: {county}\n"
-        total_county_votes = 0
+        county_breakdown_report += f"County: {county}\n"
+        county_vote_total = 0
         highest_candidate_county_vote_count = 0
         highest_county_candidate = ""
         # candidate_county_percentage = 0.0
 
-        for candidate in county_candidate_segmentation[county]:
-            num_votes = county_candidate_segmentation[county][candidate]
+        for candidate in candidate_votes_by_county[county]:
+            num_votes = candidate_votes_by_county[county][candidate]
 
-            if num_votes > total_county_votes:
+            if num_votes > county_vote_total:
                 highest_candidate_county_vote_count = num_votes
                 highest_county_candidate = candidate
 
-            total_county_votes += num_votes
+            county_vote_total += num_votes
             candidate_pct = num_votes / county_vote[county]
 
-            county_result_output += f"\t{candidate}: {num_votes:,} ({candidate_pct:0.2%})\n"
+            county_breakdown_report += f"\t{candidate}: {num_votes:,} ({candidate_pct:0.2%})\n"
 
-        # Verification 1: identify that total_county_votes derived from segmentation matches value from original dict
-        if total_county_votes == county_vote[county]:
+        # Data Verification 1: identify that county_vote_total derived from segmentation matches value from original dict
+        if county_vote_total == county_vote[county]:
             county_verification_str = f"DATA CROSS-CHECK FOR COUNTY TOTAL: {county} OK\n"
         else:
             county_verification_str = f"ERROR: AGGREGATE VOTE DISCREPANCY FOR {county}\n"
 
         data_verification_report += county_verification_str           
     
-        county_result_output += f"Total votes in county: {total_county_votes:,}\n"
-        county_result_output += f"Candidate with most votes: {highest_county_candidate}\n"
-        county_result_output += divider_line
+        county_breakdown_report += f"Total votes in county: {county_vote_total:,}\n"
+        county_breakdown_report += f"Candidate with most votes: {highest_county_candidate}\n"
+        county_breakdown_report += divider_line
 
 
-    # verification 2: Sum candidates in 2-dimensional dict and compare to value in list
-    total_candidate_votes = {}
+    # Data Verification 2: Sum candidates in 2-dimensional dict and compare to value in list
+    candidate_votes_verif = {}
     for name in candidate_options: 
-        total_candidate_votes[name]  = 0
+        candidate_votes_verif[name]  = 0
 
-    for county in county_candidate_segmentation:
-        for candidate in county_candidate_segmentation[county]:
-            total_candidate_votes[candidate] += county_candidate_segmentation[county][candidate]
+    for county in candidate_votes_by_county:
+        for candidate in candidate_votes_by_county[county]:
+            candidate_votes_verif[candidate] += candidate_votes_by_county[county][candidate]
 
     for candidate in candidate_options:
-        print(candidate)
-        if total_candidate_votes[candidate] == candidate_vote[candidate]:
+        if candidate_votes_verif[candidate] == candidate_vote[candidate]:
             county_verification_str = f"DATA CROSS-CHECK FOR CANDIDATE TOTAL: {candidate} OK\n"
         else:
             county_verification_str = f"ERROR: AGGREGATE VOTE DISCREPANCY FOR {candidate}\n"
         data_verification_report += county_verification_str
-        print(county_verification_str)
     # End verification 2
 
     
-    #Verification 3: Confirm all aggregate totals are in alignment
+    # Data Verification 3: Confirm all aggregate totals are in alignment
     total_verif_1 = 0
-    for county in county_candidate_segmentation:
-        for candidate in county_candidate_segmentation[county]:
-            total_verif_1 += county_candidate_segmentation[county][candidate]
+    for county in candidate_votes_by_county:
+        for candidate in candidate_votes_by_county[county]:
+            total_verif_1 += candidate_votes_by_county[county][candidate]
 
     total_verif_2 = 0
     for county in county_vote:
@@ -235,17 +224,21 @@ with open(output_path, "w") as txt_file:
     for candidate in candidate_vote:
         total_verif_3 += candidate_vote[candidate]
 
-    county_verification_str = ""
+    agg_verification_str = ""
 
-    if (total_verif_1 == total_verif_2 == total_verif_3):
-        county_verification_str = f"DATA CROSS-CHECK FOR AGGREGATE TOTAL: {total_verif_1} OK\n"
+    if (total_verif_1 == total_verif_2 == total_verif_3 == total_votes):
+        agg_verification_str = f"DATA CROSS-CHECK FOR AGGREGATE TOTAL: {total_votes} OK\n"
     else:
-        county_verification_str = f"ERROR IN AGGREGATE TOTAL, MISMATCH: {total_verif_1}, {total_verif_2}, {total_verif_3}\n"
+        agg_verification_str = f"ERROR IN AGGREGATE TOTAL, MISMATCH: {total_verif_1}, {total_verif_2}, {total_verif_3}, {total_votes}\n"
 
-    data_verification_report += county_verification_str
+    data_verification_report += agg_verification_str
 
-    print(county_result_output)
-    txt_file.write(county_result_output)
+    # Print and write completed report segments
+    txt_file.write(election_report)
+    print(election_report)
+
+    print(county_breakdown_report)
+    txt_file.write(county_breakdown_report)
 
     print(data_verification_report)
     txt_file.write(data_verification_report)
