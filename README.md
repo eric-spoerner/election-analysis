@@ -180,7 +180,7 @@ First, the aggregate vote count in the audit data contains 369,711 votes as comp
 
 Notably, a fourth candidate exists in the official tally: Democratic candidate Miguel Lopez, who received 22 votes.  This candidate's votes were not present in the final analysis.  Oddly, his votes seem to have been somewhat equally redistributed to the other candidates.
 
-This even reallcoation occurs on the county-by-county level, with each candidate an additional two votes in each respective county ([Source](https://historicalelectiondata.coloradosos.gov/eng/contests/view/3924/)):
+This even reallcoation occurs on the county-by-county level, with each major candidate receiving an additional two votes in each respective county ([Source](https://historicalelectiondata.coloradosos.gov/eng/contests/view/3924/)):
 
 ![Official Election Results by County](resources/official_election_results_county.png)
 
