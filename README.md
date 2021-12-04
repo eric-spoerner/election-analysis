@@ -67,7 +67,7 @@ The ideal scenario for easy scalaibility is if the source file is a CSV, with th
     * Third column contains Candidate name
 * First row contains header information
 
-![sample CSV spec](Resources/sample_csv.png)
+![sample CSV spec](resources/sample_csv.png)
 
 Operating under these assumptions, the only modifications required involve the input and output files, by altering this block of code beginning on line 10:
 ```
@@ -166,7 +166,7 @@ Given the margin of DeGette's victory, it is safe to conclude that the outcome o
 
 Multiple anomalies exist in this data when compared to the [official results](https://historicalelectiondata.coloradosos.gov/eng/contests/search/year_from:2018/year_to:2018/office_id:10/division_id:16483/stage:et-id-7) from the office of Colorado's Secretary of State as displayed below:
 
-![Official election results](Resources/official_election_results.png)
+![Official election results](resources/official_election_results.png)
 
 First, the aggregate vote count in the audit data contains 369,711 votes as compared to the official count of 369,715, for an aggregate discrepancy of four total votes.  Identifying the cause is made more complicated by the breakdown of vote totals for each candidate, as they have all seen some level of change in their vote total:
 
@@ -182,7 +182,7 @@ Notably, a fourth candidate exists in the official tally: Democratic candidate M
 
 This even reallcoation occurs on the county-by-county level, with each candidate an additional two votes in each respective county ([Source](https://historicalelectiondata.coloradosos.gov/eng/contests/view/3924/)):
 
-![Official Election Results by County](Resources/official_election_results_county.png)
+![Official Election Results by County](resources/official_election_results_county.png)
 
 ## Further analysis
 
