@@ -156,7 +156,7 @@ with open(output_path, "w") as txt_file:
             county_vote_total += num_votes
             candidate_pct = num_votes / county_vote[county]
 
-            county_breakdown_report += f"\t{candidate}: {candidate_pct:0.2%} ({num_votes:,})\n"
+            county_breakdown_report += f"\t{candidate}: {candidate_pct:0.1%} ({num_votes:,})\n"
 
         # Data Verification 1: identify that county_vote_total derived from segmentation matches value from original dict
         if county_vote_total == county_vote[county]:

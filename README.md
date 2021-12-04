@@ -33,8 +33,8 @@ Finally, data verification checks were conducted to ensure that all counts on a 
 
 The data being audited in this project is individual voter tallies from the 2018 US Congressional election in Colorado's 1st Congressional District, in which incumbent Diana DeGette [won another term in Congress](https://ballotpedia.org/Colorado%27s_1st_Congressional_District_election,_2018).
 
-Data is comprised of a CSV containing a total of 369,711 records, with the following data points:
-* ID
+Data is comprised of a CSV containing a total of 369,711 records, with each record representing a single vote with the following data points:
+* Voter ID
 * County
 * Candidate receiving vote
 
@@ -79,9 +79,31 @@ Should the data contain no header rows, comment out the following line of code o
 ```
     headers = next(file_reader)
 ```
-If County is replaced by another data point requiring the same manner of analysis (for example, precinct), the code should be easily modifiable by simply conducting a find-and-replace exercise on the data and rename all instances of "County" with the relevant attribute.
+If County is replaced by another data point requiring the same manner of analysis (for example, precinct), the code should be easily modifiable by simply conducting a find-and-replace exercise on the data and rename all instances of "County" with the relevant attribute.  Incorporating more dimensions for segmentation would require a refactor, ideally to support 3-tier or even *n*-tier data segmentation.
 
-## Results Summary
+## Design Challenges and Considerations
+
+Data structures are difficult to manipulate with standard Python libraries.  Better data manipulation techniques would have been available through the usage of tools like Pandas.
+
+In this project, a major challenge was identifying the appropriate design of a two-tier data structure to facilitate county-by-county analysis.  Multiple variations of lists/dictionary combinations were used before settling on the following two-tier dictionary structure:
+
+```
+{
+'Jefferson':    {'Charles Casper Stockham': 19723,
+                'Diana DeGette': 17963, 
+                'Raymon Anthony Doane': 1169}, 
+'Denver':       {'Charles Casper Stockham': 57188,
+                'Diana DeGette': 239282,
+                'Raymon Anthony Doane': 9585},
+'Arapahoe':     {'Charles Casper Stockham': 8302,
+                'Diana DeGette': 15647, 
+                'Raymon Anthony Doane': 852}
+}
+```
+
+Original approach was the use of a four-tier list-dict-list-dict framework in order to leverage dictionary keys for column headers rather than actual data values, but this proved unwieldy and difficult to use for lookups and manipulation, and the column headers were ultimately not needed in this case.
+
+## Audit Results
 
 Total votes cast: 369,711
 
@@ -106,25 +128,25 @@ Largest County Turnout: **Denver**
 
 #### Jefferson
 * Candidate votes:
-    * Charles Casper Stockham: 50.76% (19,723)
-    * Diana DeGette: 46.23% (17,963)
-    * Raymon Anthony Doane: 3.01% (1,169)
+    * Charles Casper Stockham: 50.8% (19,723)
+    * Diana DeGette: 46.2% (17,963)
+    * Raymon Anthony Doane: 3.0% (1,169)
 * Total votes in county: 38,855
 * Candidate with most votes: Charles Casper Stockham
 
 #### Denver
 * Candidate votes:
-    * Charles Casper Stockham: 18.69% (57,188)
-    * Diana DeGette: 78.18% (239,282)
-    * Raymon Anthony Doane: 3.13% (9,585)
+    * Charles Casper Stockham: 18.7% (57,188)
+    * Diana DeGette: 78.2% (239,282)
+    * Raymon Anthony Doane: 3.1% (9,585)
 * Total votes in county: 306,055
 * Candidate with most votes: Diana DeGette
 
 #### Arapahoe
 * Candidate votes:
-    * Charles Casper Stockham: 33.47% (8,302)
-    * Diana DeGette: 63.09% (15,647)
-    * Raymon Anthony Doane: 3.44% (852)
+    * Charles Casper Stockham: 33.5% (8,302)
+    * Diana DeGette: 63.1% (15,647)
+    * Raymon Anthony Doane: 3.4% (852)
 * Total votes in county: 24,801
 * Candidate with most votes: Diana DeGette
 
@@ -161,28 +183,6 @@ Notably, a fourth candidate exists in the official tally: Democratic candidate M
 This even reallcoation occurs on the county-by-county level, with each candidate an additional two votes in each respective county ([Source](https://historicalelectiondata.coloradosos.gov/eng/contests/view/3924/)):
 
 ![Official Election Results by County](Resources/official_election_results_county.png)
-
-## Challenges and considerations
-
-Data structures are difficult to manipulate with standard Python libraries.  Better data manipulation techniques would have been available through the usage of tools like Pandas.
-
-In this project, identifying the appropriate data structures to aggregate multi-dimensionally for a county-by-county breakdown.  Multiple variations of lists/dictionary combinations were used before settling on the following two-tier dictionary structure:
-
-```
-{
-'Jefferson':    {'Charles Casper Stockham': 19723,
-                'Diana DeGette': 17963, 
-                'Raymon Anthony Doane': 1169}, 
-'Denver':       {'Charles Casper Stockham': 57188,
-                'Diana DeGette': 239282,
-                'Raymon Anthony Doane': 9585},
-'Arapahoe':     {'Charles Casper Stockham': 8302,
-                'Diana DeGette': 15647, 
-                'Raymon Anthony Doane': 852}
-}
-```
-
-Original approach was the use of a list-dict-list-dict framework in order to leverage keys as column headers rather than actual data values, but this proved unwieldy and difficult to use for lookups and manipulation.
 
 ## Further analysis
 
