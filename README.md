@@ -20,9 +20,9 @@ Additional work was conducted to do the following:
 1. Segment each vote by county and candidate
 2. Identify percentage of candidate vote per county
 
-All of the above calculations are then printed both to the terminal and to an output file (in this case, `election_results.txt`).
-
 Finally, data verification checks were conducted to ensure that all counts on a county, candidate, and county+candidate level all match one another when aggregated.
+
+All of the above calculations are then printed both to the terminal and to an output file (in this case, `election_results.txt`).  This data readout was then used for comparison against official results.  This audit identified discrepancies with the official tally, including missing and reallocated votes.
 
 ## Resources
 * Data source: election_results.csv
@@ -31,7 +31,7 @@ Finally, data verification checks were conducted to ensure that all counts on a 
 
 ## The Data
 
-The data being audited in this project is individual voter tallies from the 2018 US Congressional election in Colorado's 1st Congressional District, in which incumbent Diana DeGette [won another term in Congress](https://ballotpedia.org/Colorado%27s_1st_Congressional_District_election,_2018).
+The data being audited in this project is a collection of individual votes from the 2018 US Congressional election in Colorado's 1st Congressional District, in which incumbent Diana DeGette [won another term in Congress](https://ballotpedia.org/Colorado%27s_1st_Congressional_District_election,_2018).
 
 Data is comprised of a CSV containing a total of 369,711 records, with each record representing a single vote with the following data points:
 * Voter ID
@@ -54,7 +54,7 @@ Logical flow of the tool is as follows:
 * Calculate percentages for each county and determine a winner.  Append results to report section.
 * Calculate percentages for each candidate and determine a winner.  Append results to report.
 * Calculate percent of candidate votes on a county-by-county basis and determine highest vote-getter in each county.  Append results to report.
-* Conduct data verification 
+* Conduct data verification
 
 ## Scalability Assessment
 
