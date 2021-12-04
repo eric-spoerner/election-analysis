@@ -1,7 +1,7 @@
 # Audit of Election Data and Proof-of-Concept for Automation
 
 ## Project Overview
-This repository contains a Python-based tool for consuming raw CSV data regarding anonymized vote tallies, and running tabulations for that election.  
+This repository contains a Python-based tool for consuming individual voter data from an election, and running tabulations for that election.  
 
 This tool has been developed at the behest of the Colorado Board of Elections, and was used to conduct an election audit of a recent congressional election. These audits are historically conducted in Microsoft Excel, but the employee has expressed the desire to automate this process in a scalable manner so that it can be used for other elections throughout the state. The trial run for this software was conducted using voting data from Colorado's 1st District.
 
